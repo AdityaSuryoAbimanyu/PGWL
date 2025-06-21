@@ -7,6 +7,27 @@ use App\Http\Controllers\PointsController;
 use App\Http\Controllers\PolygonsController;
 use App\Http\Controllers\PolylinesController;
 use App\Http\Controllers\PublicController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+Route::get('/upload-test', function () {
+    return '
+    <form method="POST" action="/upload-test" enctype="multipart/form-data">
+        '.csrf_field().'
+        <input type="file" name="image">
+        <button type="submit">Upload</button>
+    </form>';
+});
+
+Route::post('/upload-test', function (Request $request) {
+    $request->validate([
+        'image' => 'required|image',
+    ]);
+    // Simpan file ke storage/app/public/images
+    $path = $request->file('image')->storeAs('public/images', 'Gokil.jpg');
+
+    return "File berhasil diupload ke: $path";
+});
 
 Route::get('/map', [PointsController::class, 'index']) ->name('map');
 
